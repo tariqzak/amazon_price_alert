@@ -1,0 +1,12 @@
+setup.py
+amazon/__init__.py
+amazon/items.py
+amazon/pipelines.py
+amazon/settings.py
+amazon.egg-info/PKG-INFO
+amazon.egg-info/SOURCES.txt
+amazon.egg-info/dependency_links.txt
+amazon.egg-info/entry_points.txt
+amazon.egg-info/top_level.txt
+amazon/spiders/__init__.py
+amazon/spiders/amazonPrice.py
