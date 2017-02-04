@@ -97,10 +97,31 @@ class AmazonProductSpider(scrapy.Spider):
         msg_body = '<html><head></head><body>&nbsp;&nbsp;Your Product <b>' + product_name + '</b> price has dropped to <b>Rs.' + str(new_price) + '</b> (from Rs.' + str(old_price) + '). Hurry up...! Last checked on ' + str(current_datetime) + ' (' + time.strftime("%z", time.gmtime()) + ').<br><br><a href="' + productUrl + '">' + product_name + '</a></body></html>'
         mailContent = MIMEText(msg_body, 'html')
         msg.attach(mailContent)
-        server = smtplib.SMTP('smtp.gmail.com:587')
-        server.ehlo()
-        server.starttls()
-        server.login(self.mailId,self.password)
-        server.sendmail(self.mailId, toaddrs, msg.as_string())
-        server.quit()
+        try:
+            server = smtplib.SMTP('smtp.gmail.com:587')
+            server.ehlo()
+            server.starttls()
+        except smtplib.socket.gaierror:
+            return False
+
+        try:
+            server.login(self.mailId,self.password)
+        except SMTPAuthenticationError:
+            server.quit()
+            return False
+
+        #server = smtplib.SMTP('smtp.gmail.com:587')
+        #server.ehlo()
+        #server.starttls()
+        #server.login(self.mailId,self.password)
+
+        try:
+            server.sendmail(self.mailId, toaddrs, msg.as_string())
+            return True
+        except Exception:  # try to avoid catching Exception unless you have too
+            return False
+        finally:
+            server.quit()
+        #server.sendmail(self.mailId, toaddrs, msg.as_string())
+        #server.quit()
 
